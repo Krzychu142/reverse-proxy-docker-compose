@@ -1,0 +1,30 @@
+name: nginx-services
+
+networks:
+  # A SINGLE NETWORK SHARED BETWEEN MULTIPLE DOCKER-COMPOSE PROJECTS
+  # BCS AM PLANING TO USE IT WITH CURRENT DSPACE-IN-DOCKER SETUP
+  global-net:
+    name: ${GLOBAL_NETWORK:-global-network}
+    external: true
+
+services:
+  reverse-proxy:
+    build:
+      context: .
+      dockerfile: reverse-proxy.Dockerfile
+      args:
+        CONF_TEMPLATE_PATH_REVERSE_PROXY: ${CONF_TEMPLATE_PATH_REVERSE_PROXY:-./config/nginx/conf.d/reverse-proxy.template.conf}
+    container_name: ${PROJECT_NAME}-reverse-proxy
+    env_file:
+      - .env
+    # GET WHOLE CONUMICATION FROM THE HOST'S PORTS FOR HTTP AND HTTPS
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - global-net
+    volumes:
+      # CERTIFICATES FOR HTTPS
+      - ${CERTS_PATH:-./config/certs}:/etc/nginx/certs:ro
+      # LOGS
+      - ${LOGS_PATH_REVERSE_PROXY:-./logs/reverse-proxy}:/var/log/nginx

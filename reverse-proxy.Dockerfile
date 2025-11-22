@@ -1,13 +1,21 @@
 FROM nginx:perl
 
+
+# BUILD TIME ARGUMENTS
+ARG CONF_TEMPLATE_PATH_REVERSE_PROXY
+
+# ENVIRONMENT VARIABLES
 ENV NGINX_HOST=${NGINX_HOST:-localhost}
 ENV TZ=${TIMEZONE:-Europe/Warsaw}
 
-COPY ${nginx-config-path:-/conf/nginx/conf.d} /etc/nginx/conf.d/default.conf
+COPY ${CONF_TEMPLATE_PATH_REVERSE_PROXY} /etc/nginx/templates/default.conf.template
 
-EXPOSE ${NGINX_PORT:-80} 
+# PORTS
+# Expose HTTP and HTTPS protocols ports
+EXPOSE 80
+EXPOSE 443
 
-# cmd
+# COMMANDS
 # To prevent Docker before killing the container
 # (precisely, to keep the demon of the nginx running inside the container)
 # run nging demon in the foreground

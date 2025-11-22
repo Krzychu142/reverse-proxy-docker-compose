@@ -8,9 +8,19 @@ docker-compose.yml
 docker-compose.*.yml
 
 # Config
-.env
-.env.*
-/config
+config/certs/
+*.key
+*.crt
+*.pem
 
 # Docks
 README.md
+
+# Logs
+logs/
+*.log
+
+# System files
+.DS_Store
+.idea/
+.vscode/
