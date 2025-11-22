@@ -1,0 +1,16 @@
+# Git related files
+.git
+.gitgnore
+
+# Docker related files
+*.Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+
+# Config
+.env
+.env.*
+/config
+
+# Docks
+README.md
