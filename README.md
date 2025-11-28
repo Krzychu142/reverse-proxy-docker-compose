@@ -1,6 +1,5 @@
 Remember to run this command before docker compose.
 
-
 ```
 ./init-network.sh
 ```
@@ -8,3 +7,5 @@ Remember to run this command before docker compose.
 ```
 docker network rm ${GLOBAL_NETWORK}
 ```
+
+### TO DO - TO DO

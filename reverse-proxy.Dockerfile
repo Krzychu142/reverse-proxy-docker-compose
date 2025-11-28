@@ -4,8 +4,13 @@ FROM nginx:perl
 ARG CONF_TEMPLATE_PATH_REVERSE_PROXY
 
 # ENVIRONMENT VARIABLES
-ENV NGINX_HOST=${NGINX_HOST:-localhost}
-ENV TZ=${TIMEZONE:-Europe/Warsaw}
+# Remeber to add here the variables from the .env file if you want to use them in the nginx config template files.
+ENV NGINX_HOST_DOMAIN=localhost
+ENV TZ=Europe/Warsaw
+ENV MAX_BODY_SIZE=512M   
+ENV MAX_FAILS=4
+ENV FAIL_TIMEOUT=35s
+ENV KEEP_ALIVE=32
 
 COPY ${CONF_TEMPLATE_PATH_REVERSE_PROXY} /etc/nginx/templates/default.conf.template
 

@@ -27,4 +27,4 @@ services:
       # CERTIFICATES FOR HTTPS
       - ${CERTS_PATH:-./config/certs}:/etc/nginx/certs:ro
       # LOGS
-      - ${LOGS_PATH_REVERSE_PROXY:-./logs/reverse-proxy}:/var/log/nginx
+      - ${LOGS_PATH:-./logs/reverse-proxy}:/var/log/nginx
