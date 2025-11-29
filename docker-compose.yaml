@@ -1,8 +1,10 @@
 name: nginx-services
 
 networks:
-  # A SINGLE NETWORK SHARED BETWEEN MULTIPLE DOCKER-COMPOSE PROJECTS
-  # BCS AM PLANING TO USE IT WITH CURRENT DSPACE-IN-DOCKER SETUP
+  # Intence of this project is to run this Nginx with the other services on the same docker host.
+  # So to let them communicate, we have to keep all the services in the same network.
+  # The common network should be created before creating any services.
+  # Use the init.sh script for that.
   global-net:
     name: ${GLOBAL_NETWORK:-global-network}
     external: true
@@ -13,18 +15,23 @@ services:
       context: .
       dockerfile: reverse-proxy.Dockerfile
       args:
+        # The path to the main nginx template config file.
+        CONF_TEMPLATE_PATH_MAIN_CONFIG: ${CONF_TEMPLATE_PATH_MAIN_CONFIG:-./config/nginx/nginx.template.conf}
+        # The path to the reverse proxy template config file.
         CONF_TEMPLATE_PATH_REVERSE_PROXY: ${CONF_TEMPLATE_PATH_REVERSE_PROXY:-./config/nginx/conf.d/reverse-proxy.template.conf}
     container_name: ${PROJECT_NAME}-reverse-proxy
     env_file:
+      # The .env file with the variables. It will replace the envs in the Dockerfile.
       - .env
-    # GET WHOLE CONUMICATION FROM THE HOST'S PORTS FOR HTTP AND HTTPS
+    # Redirect the whole HTTP and HTTPS traffic from the docker host to the Nginx.
     ports:
       - "80:80"
       - "443:443"
     networks:
+      # Remember; that have to be the same network name as in the networks section.
       - global-net
     volumes:
-      # CERTIFICATES FOR HTTPS
+      # SSL certs
       - ${CERTS_PATH:-./config/certs}:/etc/nginx/certs:ro
-      # LOGS
+      # Logs
       - ${LOGS_PATH:-./logs/reverse-proxy}:/var/log/nginx
