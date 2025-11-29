@@ -19,6 +19,8 @@ services:
         CONF_TEMPLATE_PATH_MAIN_CONFIG: ${CONF_TEMPLATE_PATH_MAIN_CONFIG:-./config/nginx/nginx.template.conf}
         # The path to the reverse proxy template config file.
         CONF_TEMPLATE_PATH_REVERSE_PROXY: ${CONF_TEMPLATE_PATH_REVERSE_PROXY:-./config/nginx/conf.d/reverse-proxy.template.conf}
+        # The path to the common proxy directives for the backend and frontend.
+        PROXY_PARAMS_PATH: ${PROXY_PARAMS_PATH:-./config/nginx/conf.d/proxy_params.conf}
     container_name: ${PROJECT_NAME}-reverse-proxy
     env_file:
       # The .env file with the variables. It will replace the envs in the Dockerfile.
