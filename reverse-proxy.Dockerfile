@@ -20,6 +20,9 @@ ENV DSPACE_DSPACE_TOMCAT_HOST=dspace-backend-tomcat
 ENV DSPACE_DSPACE_TOMCAT_PORT=8080
 ENV DSPACE_UI_HOST=dspace-frontend
 ENV DSPACE_UI_PORT=4000
+ENV PROXY_READ_TIMEOUT=90s
+ENV PROXY_CONNECT_TIMEOUT=90s
+ENV PROXY_SEND_TIMEOUT=90s
 ENV WORKER_CONNECTIONS=4096
 ENV WORKER_RLIMIT_NOFILE=8192
 
@@ -30,22 +33,19 @@ COPY ${CONF_TEMPLATE_PATH_MAIN_CONFIG} /etc/nginx/nginx.conf.template
 COPY ${CONF_TEMPLATE_PATH_REVERSE_PROXY} /etc/nginx/templates/default.conf.template
 
 # Common params for the backend and frontend.
-COPY ${PROXY_PARAMS_PATH} /etc/nginx/proxy_params
+COPY ${PROXY_PARAMS_PATH} /etc/nginx/proxy_params.template
+
+# Custom entrypoint script
+COPY ./docker-entrypoint.sh /custom-entrypoint.sh
+RUN chmod +x /custom-entrypoint.sh
 
 # PORTS
 # Expose HTTP and HTTPS protocols ports
 EXPOSE 80
 EXPOSE 443
 
-# COMMAND
-# To use shell
-# /bin/sh
-# To execute the command
-# -c
+# ENTRYPOINT
+ENTRYPOINT ["/custom-entrypoint.sh"]
 
-# Logic:
-# Take the nginx.template.conf as a source: "< /etc/nginx/nginx.conf.template"
-# Replace ONLY ${WORKER_X} variables (ignore NGINX internal variables like $host)
-# Save result to /etc/nginx/nginx.conf (overwriting default config)
-# if success (&&), start nginx with daemon off to prevent the container from exiting.
-CMD ["/bin/sh", "-c", "envsubst '${WORKER_CONNECTIONS} ${WORKER_RLIMIT_NOFILE}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"]
+# CMD
+CMD ["nginx", "-g", "daemon off;"]
