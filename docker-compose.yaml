@@ -37,3 +37,26 @@ services:
       - ${CERTS_PATH:-./config/certs}:/etc/nginx/certs:ro
       # Logs
       - ${LOGS_PATH:-./logs/reverse-proxy}:/var/log/nginx
+
+
+  # MOCK SERVICES FOR TESTING
+  # COMMENT AFTER TESTING
+  # --- MOCK BACKEND ---
+  # dspace-backend-tomcat:
+  #   image: traefik/whoami
+  #   container_name: dspace-backend-tomcat
+  #   command: --port 8080
+  #   networks:
+  #     - global-net
+  #   expose:
+  #     - "8080"
+
+  # # --- MOCK FRONTEND ---
+  # dspace-frontend:
+  #   image: traefik/whoami
+  #   container_name: dspace-frontend
+  #   command: --port 4000
+  #   networks:
+  #     - global-net
+  #   expose:
+  #     - "4000"
